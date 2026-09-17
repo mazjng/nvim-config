@@ -17,3 +17,7 @@ vim.opt.incsearch = true
 vim.opt.termguicolors = true
 
 vim.opt.colorcolumn = "80"
+
+-- toggle invisibles on <leader>si (show invisibles)
+vim.keymap.set('n', '<leader>si', function () vim.opt.list = not vim.opt.list:get() end)
+vim.opt.listchars = { leadmultispace = "|···", tab = "<->", trail = "·"}
