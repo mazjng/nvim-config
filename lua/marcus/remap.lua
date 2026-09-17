@@ -11,4 +11,9 @@ vim.keymap.set("n", "<C-u>", "<C-u>zz")
 vim.keymap.set("n", "n", "nzzzv")
 vim.keymap.set("n", "N", "Nzzzv")
 
-
+-- re-indent entire file
+vim.keymap.set("n", "<leader>=", function()
+    local view = vim.fn.winsaveview()
+    vim.cmd("normal! gg=G")
+    vim.fn.winrestview(view)
+end, { desc = "Reindent entire file, keep cursor position" })
