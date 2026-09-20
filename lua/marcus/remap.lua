@@ -17,3 +17,11 @@ vim.keymap.set("n", "<leader>=", function()
     vim.cmd("normal! gg=G")
     vim.fn.winrestview(view)
 end, { desc = "Reindent entire file, keep cursor position" })
+
+-- boostrap undo
+-- FIXES: undo re-indent entire file
+vim.keymap.set('n', 'u', function()
+    local view = vim.fn.winsaveview()
+    vim.cmd.undo()
+    vim.fn.winrestview(view)
+end, { desc = "Undo last action, keep cursor position"})
