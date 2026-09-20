@@ -12,12 +12,16 @@ vim.o.showmode = false
 local palette = require("catppuccin.palettes").get_palette "mocha"
 
 local hl_colors = {
+    -- Mode colors
     ['Normal'] = { fg = palette.green },
     ['Pending'] = { fg = palette.flamingo },
     ['Visual'] = { fg = palette.mauve },
     ['Insert'] = { fg = palette.yellow },
     ['Command'] = { fg = palette.blue },
-    ['Other'] = { fg = palette.red }
+    ['Other'] = { fg = palette.red },
+
+    -- Position colors
+    ['Position'] = { fg = palette.blue }
 }
 
 -- Pull defaults from existing statusline
@@ -164,8 +168,33 @@ end
 
 --- @return string
 function M.position_component()
-    return 'c:%c l:%l/%L'
+    local hl = 'Position'
+    local pos_str = '%c|%l'
+    local percent_str = '%p%%'
+
+    return string.format(
+        '%%#%s#%s%%#Statusline# %s',
+        M.get_or_create_hl(hl),
+        pos_str,
+        percent_str
+    )
 end
+
+--- @return string
+function M.Lsp_component()
+    local clients = vim.lsp.get_clients({ bufnr = 0 })
+
+    if #clients == 0 then
+        return ''
+    end
+
+    local names = vim.tbl_map(function(client)
+        return client.name
+    end, clients)
+
+    return string.format('%s', table.concat(names, ', '))
+end
+
 
 --- @return string
 function M.inactive_component()
@@ -178,11 +207,11 @@ function M.render()
     ---@return string
     local function concat_components(components)
         return vim.iter(components):skip(1):fold(components[1], function(acc, component)
-            return #component > 0 and string.format('%s  %s', acc, component) or acc 
+            return #component > 0 and string.format('%s  %s', acc, component) or acc
         end)
     end
 
-    -- Check active window
+
     local active = vim.g.statusline_winid == vim.api.nvim_get_current_win()
 
     if active then
@@ -193,9 +222,12 @@ function M.render()
                 M.file_component(),
                 M.git_component()
             },
-            '%#StatusLine#%=',
+            '%#StatusLine#',
+            '%=',
+            '%<',
             concat_components {
                 vim.diagnostic.status(),
+                M.Lsp_component(),
                 M.os_component(),
                 M.encoding_component(),
                 M.position_component()
