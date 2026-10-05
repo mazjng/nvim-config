@@ -2,6 +2,9 @@ local os_utils = require('marcus.osutils')
 
 if os_utils.is_windows then
     vim.o.shell = 'pwsh'
+    vim.o.shellcmdflag = '-NoLogo -NoProfile -Command'
+    vim.o.shellquote = ''
+    vim.o.shellxquote = ''
 else
     vim.o.shell = '/usr/bin/zsh'
 end
