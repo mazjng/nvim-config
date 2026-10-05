@@ -1,5 +1,6 @@
 -- Set the mapleader before all remaps
 vim.g.mapleader = " "
+vim.g.maplocalleader = ","
 
 require('marcus.editor')
 require('marcus.terminal')
